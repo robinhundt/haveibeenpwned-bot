@@ -1,0 +1,13 @@
+[package]
+name = "haveibeenpwned-bot"
+version = "0.1.0"
+authors = ["robinwilliam.hundt <robinwilliam.hundt@stud.uni-goettingen.de>"]
+edition = "2018"
+
+[dependencies]
+telegram-bot = "0.6.1"
+futures = "0.1.25"
+tokio-core = "0.1.17"
+lazy_static = "1.2.0"
+regex = "1.1.0"
+reqwest = "0.9.9"
