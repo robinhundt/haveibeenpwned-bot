@@ -23,7 +23,7 @@ fn extract_email<'a, T: Into<&'a str>>(text: T) -> Result<&'a str, &'static str>
 
 fn get_num_of_breaches<'a>(email: impl Into<&'a str>) -> reqwest::Result<usize> {
     let request_url = format!(
-        "https://haveibeenpwned.com/api/v2/breachedaccount/{}?truncateResponce=true",
+        "https://haveibeenpwned.com/api/v2/breachedaccount/{}?truncateResponse=true",
         email.into()
     );
     let mut response = reqwest::get(&request_url)?;
