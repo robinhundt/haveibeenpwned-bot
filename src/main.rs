@@ -39,11 +39,13 @@ fn run_pwned(api: Api, message: Rc<Message>, handle: &Handle) -> Result<(), Box<
         unreachable!();
     };
     let num_breaches = get_num_of_breaches(email)?;
-    api.spawn(message.text_reply(
+    let mut reply = message.text_reply(
         format!(
             "The email {} has been breached {} times!\nVisit https://haveibeenpwned.com for more information.",
             email,
-            num_breaches)));
+            num_breaches));
+    reply.disable_preview();
+    api.spawn(reply);
 
     Ok(())
 }
