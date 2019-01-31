@@ -1,9 +1,9 @@
 use std::borrow::Cow;
-use std::rc::Rc;
 use std::env;
+use std::rc::Rc;
 use tokio_core::reactor::Handle;
 
-use futures::{Stream, Future};
+use futures::{Future, Stream};
 use telegram_bot::*;
 use tokio_core::reactor::Core;
 
@@ -32,7 +32,11 @@ fn get_num_of_breaches<'a>(email: impl Into<&'a str>) -> reqwest::Result<usize> 
     Ok(count)
 }
 
-fn run_pwned(api: Api, message: Rc<Message>, handle: &Handle) -> Result<(), Box<std::error::Error>> {
+fn run_pwned(
+    api: Api,
+    message: Rc<Message>,
+    handle: &Handle,
+) -> Result<(), Box<std::error::Error>> {
     let email = if let MessageKind::Text { ref data, .. } = message.kind {
         extract_email(data.as_str())?
     } else {
@@ -61,15 +65,12 @@ fn main() {
     let future = api.stream().for_each(|update| {
         if let UpdateKind::Message(message) = update.kind {
             if let MessageKind::Text { ref data, .. } = message.kind {
-                match &data[0..6] {
-                    "/pwned" => {
-                        let message = Rc::new(message);
-                        let result = run_pwned(api.clone(), message.clone(), &handle);
-                        if let Err(err) = result {
-                            api.spawn(message.text_reply(format!("{}", err)));
-                        }
-                    },
-                    _ => ()
+                if data.starts_with("/pwned") {
+                    let message = Rc::new(message);
+                    let result = run_pwned(api.clone(), message.clone(), &handle);
+                    if let Err(err) = result {
+                        api.spawn(message.text_reply(format!("{}", err)))
+                    }
                 }
             }
         }
